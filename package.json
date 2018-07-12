@@ -1,0 +1,26 @@
+{
+  "name": "convert2pdf",
+  "version": "0.1.0",
+  "description": "Converts from a text format file to PDF with middlewares on the way.",
+  "main": "src/index.mjs",
+  "bin": "src/index.mjs",
+  "scripts": {
+    "build": "rollup src/index.mjs -f es6 -o lib/",
+    "format": "prettier --write 'src/**/*.{js,mjs}'",
+    "start": "node --experimental-modules src/index.mjs",
+    "test": "convert2pdf test.md --data test.json --out test.pdf"
+  },
+  "keywords": [],
+  "author": "Joern Bernhardt <joern.bernhardt@googlemail.com> (http://www.unreleased.de)",
+  "license": "MIT",
+  "dependencies": {
+    "handlebars": "^4.0.11",
+    "puppeteer": "^1.5.0",
+    "showdown": "^1.8.6",
+    "yargs": "^12.0.1"
+  },
+  "devDependencies": {
+    "prettier": "^1.13.7",
+    "rollup": "^0.62.0"
+  }
+}
