@@ -4,6 +4,15 @@ Converts a text file to a PDF.
 
 It currently supports HTML and Markdown to PDF. Markdown will be preprocessed into HTML and then converted to PDF using Puppeteer.
 
+## Setup
+
+`npm install`
+and then link to the executable:
+`npm link`
+
+When you have `node_modules/.bin` in your PATH, you can simply run `convert2pdf`.
+Alternatively you can invoke it with `node_modules/.bin/convert2pdf`.
+
 ## Usage
 
 ```
