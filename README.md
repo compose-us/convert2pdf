@@ -7,6 +7,21 @@ It currently supports HTML and Markdown to PDF. Markdown will be preprocessed in
 ## Usage
 
 ```
-convert2pdf <source> [--format <format>] [--data <json-file>] [--template <template-file>] [--output <pdf-name>]
+convert2pdf <source> [--format <format>] [--data <json-file>] [--template <template-file>] [--output <pdf-name>] [--html <html-name>]
+```
+
+```
+Options:
+  --version   Show version number                                      [boolean]
+  --format    Specifies the format of the source file. Will assume by extension
+              if omitted.
+  --template  Selects an HTML template and puts the results of the selected
+              source file into {{content}}
+  --output    Sets the output filename                   [default: "output.pdf"]
+  --html      Writes an HTML file before converting to PDF
+  --data      uses the provided .json file to preprocess the source file with
+              handlebars and provides the included variables.
+  --help      Show help                                                [boolean]
+
 ```
 
