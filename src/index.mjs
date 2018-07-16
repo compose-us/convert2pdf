@@ -30,6 +30,9 @@ const argv = yargs
   .option("output", {
     description: "Sets the output filename",
     default: "output.pdf"
+	})
+  .option("html", {
+    description: "Writes an HTML file before converting to PDF"
   })
   .config(
     "data",
@@ -40,13 +43,16 @@ const argv = yargs
 
 run(argv).catch(error => console.error({ error }));
 
-async function run({ source, context, format, template, output }) {
+async function run({ source, context, format, html, template, output }) {
   const sourceHbs = fs.readFileSync(source, "utf-8");
   const templateHbs = template || "{{{ content }}}";
   const preprocessedContent = await handlebarsIfNecessary(sourceHbs, context);
   const htmlContent = await findConverter(format || formatByExtension(source))(preprocessedContent);
-  const html = await handlebarsIfNecessary(templateHbs, { ...context, content: htmlContent });
-  const pdf = await pdfConvert(html, { format: "A4" });
+  const htmlData = await handlebarsIfNecessary(templateHbs, { ...context, content: htmlContent });
+  const pdf = await pdfConvert(htmlData, { format: "A4" });
+  if (html) {
+    fs.writeFileSync(html, htmlData);
+  }
   fs.writeFileSync(output, pdf);
 }
 

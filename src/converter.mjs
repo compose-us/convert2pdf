@@ -22,6 +22,7 @@ export async function pdfConvert(html, options = {}) {
       page.on("request", request => request.continue());
     });
     await page.goto("http://example.com");
+    await page.emulateMedia("print");
     return await page.pdf(options);
   } catch (e) {
     return Promise.reject(e);
