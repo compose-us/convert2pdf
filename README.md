@@ -34,3 +34,9 @@ Options:
 
 ```
 
+## Tips and tricks
+
+* When you want to display images, make sure they're recognized as content. Background is not shown per default and it's hard to convince the browser to show it in a print setting.
+* When working with chrome page layout options, make sure that
+  headerTemplate and footerTemplate have a left margin of at least about 10px and proper font-size. Otherwise, you won't see them.
+(see https://github.com/GoogleChrome/puppeteer/issues/1853 and https://github.com/GoogleChrome/puppeteer/issues/1822)
