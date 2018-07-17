@@ -1,7 +1,6 @@
 import showdown from "showdown";
 import handlebars from "handlebars";
 import puppeteer from "puppeteer";
-import juice from "juice";
 
 export async function handlebarsConvert(text, context = {}) {
   const template = handlebars.compile(text);
@@ -18,7 +17,31 @@ export async function pdfConvert(html, options = {}) {
   const page = await browser.newPage();
   await page.setContent(html);
   try {
-    return await page.pdf(options);
+    let headerTemplate = await page.evaluate(() => {
+      const headerTemplate = document.getElementById("header-template");
+      return headerTemplate ? headerTemplate.innerHTML.toString() : "";
+    });
+    let footerTemplate = await page.evaluate(() => {
+      const footerTemplate = document.getElementById("footer-template");
+      return footerTemplate ? footerTemplate.innerHTML.toString() : "";
+    });
+    let showHeaderOnFirstPage = await page.evaluate(() => {
+      const headerTemplate = document.getElementById("header-template");
+      return Number(headerTemplate ? headerTemplate.dataset.showOnFirstPage : "1");
+    });
+
+    if (!showHeaderOnFirstPage) {
+      await page.addStyleTag({
+        content: "@page:first {margin: 0 1cm 3cm 1cm;} body {margin: 3cm 0 0 0;}"
+      });
+    }
+
+    return await page.pdf({
+      ...options,
+      headerTemplate,
+			footerTemplate,
+			printBackground: true
+    });
   } catch (e) {
     return Promise.reject(e);
   } finally {
