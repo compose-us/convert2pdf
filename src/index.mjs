@@ -3,14 +3,16 @@
 import fs from "fs";
 import path from "path";
 import yargs from "yargs";
-import { handlebarsConvert, markdownConvert, pdfConvert } from "./converter.mjs";
+import { asciidocConvert, handlebarsConvert, markdownConvert, pdfConvert } from "./converter.mjs";
 
 const CONVERT_FORMATS = {
+  ASCIIDOC: "ASCIIDOC",
   HTML: "HTML",
   MARKDOWN: "MARKDOWN"
 };
 
 const CONVERT_FORMATTER = {
+  ASCIIDOC: asciidocConvert,
   HTML: input => input,
   MARKDOWN: markdownConvert
 };
@@ -30,7 +32,7 @@ const argv = yargs
   .option("output", {
     description: "Sets the output filename",
     default: "output.pdf"
-	})
+  })
   .option("html", {
     description: "Writes an HTML file before converting to PDF"
   })
@@ -45,23 +47,31 @@ run(argv).catch(error => console.error({ error }));
 
 async function run({ source, context, format, html, template, output }) {
   const sourceHbs = fs.readFileSync(source, "utf-8");
+  console.log("! 1")
   const templateHbs = template || "{{{ content }}}";
+  console.log("! 2")
   const preprocessedContent = await handlebarsIfNecessary(sourceHbs, context);
+  console.log("! 3")
   const htmlContent = await findConverter(format || formatByExtension(source))(preprocessedContent);
+  console.log("! 4")
   const htmlData = await handlebarsIfNecessary(templateHbs, { ...context, content: htmlContent });
-  const options = { format: "A4",
-                    displayHeaderFooter: true,
-                    margin: {
-                      top: "2cm",
-                      left: "2cm",
-                      right: "2cm",
-                      bottom: "2cm"
-                    }
-                  };
+  console.log("! 5")
+  const options = {
+    format: "A4",
+    displayHeaderFooter: true,
+    margin: {
+      top: "2cm",
+      left: "2cm",
+      right: "2cm",
+      bottom: "2cm"
+    }
+  };
   const pdf = await pdfConvert(htmlData, options);
+  console.log("! 6")
   if (html) {
     fs.writeFileSync(html, htmlData);
   }
+  console.log("! 7")
   fs.writeFileSync(output, pdf);
 }
 
@@ -78,6 +88,10 @@ function findConverter(format) {
 function formatByExtension(filename) {
   console.log("format by extension", { filename });
   switch (path.extname(filename).toLowerCase()) {
+    case ".ad":
+    case ".adoc":
+    case ".asciidoc":
+      return CONVERT_FORMATS.ASCIIDOC;
     case ".htm":
     case ".html":
       return CONVERT_FORMATS.HTML;

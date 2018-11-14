@@ -1,15 +1,22 @@
+import Asciidoctor from "asciidoctor.js";
 import showdown from "showdown";
-import handlebars from "handlebars";
+import Handlebars from "handlebars";
 import puppeteer from "puppeteer";
 
 export async function handlebarsConvert(text, context = {}) {
-  const template = handlebars.compile(text);
+  const template = Handlebars.compile(text);
   return template(context);
 }
 
 export async function markdownConvert(text, options = {}) {
   const converter = new showdown.Converter(options);
   return converter.makeHtml(text);
+}
+
+export async function asciidocConvert(text) {
+  console.log("CONVERTING ASCIIDOC");
+  const converter = new Asciidoctor();
+  return converter.convert(text);
 }
 
 export async function pdfConvert(html, options = {}) {
@@ -39,8 +46,8 @@ export async function pdfConvert(html, options = {}) {
     return await page.pdf({
       ...options,
       headerTemplate,
-			footerTemplate,
-			printBackground: true
+      footerTemplate,
+      printBackground: true
     });
   } catch (e) {
     return Promise.reject(e);
