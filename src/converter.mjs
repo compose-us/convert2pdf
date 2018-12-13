@@ -8,7 +8,9 @@ export async function handlebarsConvert(text, context = {}) {
   return template(context);
 }
 
-export async function markdownConvert(text, options = {}) {
+export async function markdownConvert(text, options = {
+  tasklists: true
+}) {
   const converter = new showdown.Converter(options);
   return converter.makeHtml(text);
 }

@@ -47,15 +47,10 @@ run(argv).catch(error => console.error({ error }));
 
 async function run({ source, context, format, html, template, output }) {
   const sourceHbs = fs.readFileSync(source, "utf-8");
-  console.log("! 1")
   const templateHbs = template || "{{{ content }}}";
-  console.log("! 2")
   const preprocessedContent = await handlebarsIfNecessary(sourceHbs, context);
-  console.log("! 3")
   const htmlContent = await findConverter(format || formatByExtension(source))(preprocessedContent);
-  console.log("! 4")
   const htmlData = await handlebarsIfNecessary(templateHbs, { ...context, content: htmlContent });
-  console.log("! 5")
   const options = {
     format: "A4",
     displayHeaderFooter: true,
@@ -67,11 +62,9 @@ async function run({ source, context, format, html, template, output }) {
     }
   };
   const pdf = await pdfConvert(htmlData, options);
-  console.log("! 6")
   if (html) {
     fs.writeFileSync(html, htmlData);
   }
-  console.log("! 7")
   fs.writeFileSync(output, pdf);
 }
 
